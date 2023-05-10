@@ -19,6 +19,7 @@ const Home = () => {
       }
 
   const { user } = useContext(UserContext);
+  const { logOutUser } = useContext(UserContext);
 
   const getDataQuery = gql`
   {
@@ -253,6 +254,12 @@ const Home = () => {
         </Table>
         <Button variant="contained" onClick={() => redirect("newholding")}>
         Create New Land Holding
+        </Button>
+        <br></br>
+        <br></br>
+        <br></br>
+        <Button variant="contained" onClick={logOutUser}>
+        Logout
         </Button>
     </div>
     
