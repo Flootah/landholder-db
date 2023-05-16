@@ -10,34 +10,28 @@ import CreateHolding from "./pages/CreateHolding.page";
 import EditOwner from "./pages/EditOwner.page";
 import EditHolding from "./pages/EditHolding.page";
 
-// Creating a new query-client which we will use
-// in our QueryClientProvider that can be accessed 
-// from anywhere in the app.
 const queryClient = new QueryClient();
-
 
 
 function App() {
   return (
-    // We are wrapping our whole app with QueryClientProvider so that 
-    // our queryClient is accessible through out the app from any page
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <UserProvider>
-          <Routes>
-            <Route exact path="/login" element={<Login />} />
-            <Route exact path="/signup" element={<Signup />} />
-            <Route element={<PrivateRoute />}>
-              <Route exact path="/" element={<Home />} />
-            </Route>
-            <Route exact path="/newowner" element={<CreateOwner />} />
-            <Route exact path="/newholding" element={<CreateHolding />} />
-            <Route exact path="/editowner/:id" element={<EditOwner />} />
-            <Route exact path="/editholding/:id" element={<EditHolding />} />
-          </Routes>
-        </UserProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <UserProvider>
+            <Routes>
+              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/signup" element={<Signup />} />
+              <Route element={<PrivateRoute />}>
+                <Route exact path="/" element={<Home />} />
+              </Route>
+              <Route exact path="/newowner" element={<CreateOwner />} />
+              <Route exact path="/newholding" element={<CreateHolding />} />
+              <Route exact path="/editowner/:id" element={<EditOwner />} />
+              <Route exact path="/editholding/:id" element={<EditHolding />} />
+            </Routes>
+          </UserProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
   );
 }
 

@@ -7,7 +7,6 @@ import { useQuery } from 'react-query';
 import Table from '../components/ReactTable.component'
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
-import { graphql } from 'graphql';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -304,26 +303,26 @@ const Home = () => {
   if (error) return error.message;
 
   return <PageContainer>
-    <h1>Database</h1>
+    <h1 style={{paddingTop: '25px'}}>Database</h1>
 
     <div>
-        <h2>Owners</h2>
+        <h2 style={{margin: '15px'}}>Owners</h2>
         <Table
             data = {data.owners}
             columns = {ownerColumns}
         >
         </Table>
-        <Button variant="contained" onClick={() => redirect("newowner")}>
+        <Button style={{margin: '15px'}} variant="contained" onClick={() => redirect("newowner")}>
             Create New Owner
         </Button>
-        <h2>Land Holdings</h2>
+        <h2 style={{margin: '15px'}}>Land Holdings</h2>
         <Table
             data = {data.landholdings}
             columns = {holdingColumns}
         >
             
         </Table>
-        <Button variant="contained" onClick={() => redirect("newholding")}>
+        <Button style={{margin: '15px'}} variant="contained" onClick={() => redirect("newholding")}>
         Create New Land Holding
         </Button>
         <br></br>

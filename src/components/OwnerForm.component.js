@@ -77,10 +77,10 @@ const OwnerForm = ({ onSubmit, form, setForm, editing }) => {
         onChange={onFormInputChange}
         fullWidth
         style={{ marginBottom: "1rem" }} /> */}
-      <Button variant="contained" color="primary" onClick={onSubmit} type="submit">
+      <Button style={{margin: '15px'}} variant="contained" color="primary" onClick={onSubmit} type="submit">
         {editing ? "Update" : "Create"} Owner
       </Button>
-      <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+      <Button style={{margin: '15px'}} variant="contained" color="primary" onClick={() => navigate("/")}>
         Cancel
       </Button>
     </form>

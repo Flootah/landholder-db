@@ -97,10 +97,10 @@ const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
         <MenuItem value={"Class D"}>Class D</MenuItem>
       </Select>
 
-      <Button variant="contained" color="primary" onClick={onSubmit} type="submit">
+      <Button style={{margin: '15px'}} variant="contained" color="primary" onClick={onSubmit} type="submit">
         {editing ? "Update" : "Create"} Holding
       </Button>
-      <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+      <Button style={{margin: '15px'}} variant="contained" color="primary" onClick={() => navigate("/")}>
         Cancel
       </Button>
     </form>
