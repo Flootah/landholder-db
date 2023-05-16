@@ -20,7 +20,7 @@ const CreateOwner = () => {
   });
 
   // GraphQL query to create an expense
-  const createExpenseQuery = gql`
+  const createOwnerQuery = gql`
   mutation AddOwner($data: OwnerInsertInput!) {
     insertOneOwner(data: $data) {
       _id
@@ -28,7 +28,7 @@ const CreateOwner = () => {
   }
   `;
 
-  
+  // searches for all owners that match given address and name
   const searchOwnerQuery = gql`
   query searchOwner($name: String, $address: String){
     owners (query:{OR: [{OwnerName: $name},{Address:$address}] }) {
@@ -71,7 +71,7 @@ const CreateOwner = () => {
         return;
       }
 
-      await request(GRAPHQL_ENDPOINT, createExpenseQuery, queryVariables, headers);
+      await request(GRAPHQL_ENDPOINT, createOwnerQuery, queryVariables, headers);
 
       // Navigate to the Home page after creating an expense
       navigate(`/`);

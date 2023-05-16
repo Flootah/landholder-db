@@ -90,137 +90,208 @@ const Home = () => {
     afterDelete();
   }
 
-  async function removeHolding(id) {
+  async function removeHolding(id, owner) {
     var response = window.confirm("Are you sure you wish to remove this Holding?")
     if (!response) return 
 
     await request(GRAPHQL_ENDPOINT,
         `
-            mutation DeleteOneHolding($id: ObjectId) {
-                deleteOneLandholding(query: {_id: $id}) {
-                    _id
-                }
+        mutation DeleteOneHolding($id: ObjectId) {
+            deleteOneLandholding(query: {_id: $id}) {
+                _id
             }
+        }
         `,
         {"id" : id},
         headers
-        )
-    console.log(id + " Deleted");
+        );
+    
+    await request(GRAPHQL_ENDPOINT,
+        `
+        mutation UpdateOneOwner($owner: String) {
+            updateOneOwner(query: {OwnerName: $owner}, set: {TotalNumberOfLandHoldings_inc: -1}) {
+                _id
+                }
+        }
+        `,
+        {"owner": owner},
+        headers
+        );
 
     afterDelete();
   }
 
-  const ownerColumns = React.useMemo( () => [
-    {
-        Header: "Owner Name",
-        accessor: "OwnerName"
+  const ownerColumns = React.useMemo( () => [ {
+
+    Header: "Info",
+    accessor: "info",
+    columns: [
+        {
+            Header: "Owner Name",
+            accessor: "OwnerName"
+        },
+        {
+            Header: "Entity Type",
+            accessor: "EntityType"
+        },
+        {
+            Header: "Owner Type",
+            accessor: "OwnerType"
+        },
+        {
+            Header: "Address",
+            accessor: "Address"
+        },
+        {
+            Header: "Total Land Holdings",
+            accessor: "TotalNumberOfLandHoldings"
+        },
+    ],
     },
     {
-        Header: "Entity Type",
-        accessor: "EntityType"
+        Header: "Actions",
+        accessor: "actions",
+        columns: [
+            {
+                accessor: "edit",
+                Cell: ({row}) => (
+                    <span
+                    style = {{
+                        cursor: "pointer",
+                        color: "blue",
+                        textDecoration: "underline",
+                    }}
+                    onClick={() => {
+                        redirect(`editowner/${row.original._id}`)
+                    }}
+                    >
+                        Edit
+                    </span>
+                )
+            },
+            {
+                accessor: "delete",
+                Cell: ({row}) => (
+                    <span
+                    style = {{
+                        cursor: "pointer",
+                        color: "blue",
+                        textDecoration: "underline",
+                    }}
+                    onClick={() => {
+                        removeOwner(row.original._id, row.original.OwnerName)
+                    }}
+                    >
+                        Delete
+                    </span>
+                )
+            },
+
+        ]
+
     },
-    {
-        Header: "Owner Type",
-        accessor: "OwnerType"
-    },
-    {
-        Header: "address",
-        accessor: "Address"
-    },
-    {
-        Header: "Total Land Holdings",
-        accessor: "TotalNumberOfLandHoldings"
-    },
-    {
-        Header: "Delete?",
-        id: "delete",
-        accessor: (str) => "delete",
-        Cell: ({row}) => (
-            <span
-            style = {{
-                cursor: "pointer",
-                color: "blue",
-                textDecoration: "underline",
-            }}
-            onClick={() => {
-                removeOwner(row.original._id, row.original.OwnerName)
-            }}
-            >
-                Delete
-            </span>
-        )
-    }
     ],
   );
 
     const holdingColumns = [
         {
-            Header: "Name",
-            accessor: "Name"
+            Header: "Info",
+            accessor: "info",
+            columns: [
+                {
+                    Header: "Name",
+                    accessor: "Name"
+                },
+                {
+                    Header: "Owner",
+                    accessor: "Owner"
+                },
+                {
+                    Header: "Legal Entity",
+                    accessor: "LegalEntity"
+                },
+                {
+                    Header: "Net Mineral Acres",
+                    accessor: "NetMineralAcres"
+                },
+                {
+                    Header: "Mineral Owner Royalty (%)",
+                    accessor: "MineralOwnerRoyalty"
+                },
+                {
+                    Header: "Section Name",
+                    accessor: "SectionName"
+                },
+                {
+                    Header: "Section",
+                    accessor: "Section"
+                },
+                {
+                    Header: "Township",
+                    accessor: "Township"
+                },
+                {
+                    Header: "Range",
+                    accessor: "Range"
+                },
+                {
+                    Header: "Title Source",
+                    accessor: "TitleSource"
+                },
+            ]
         },
+
+        
         {
-            Header: "Owner",
-            accessor: "Owner"
+            Header: "Actions",
+            accessor: "actions",
+            columns: [
+                {
+                    accessor: "edit",
+                    Cell: ({row}) => (
+                        <span
+                        style = {{
+                            cursor: "pointer",
+                            color: "blue",
+                            textDecoration: "underline",
+                        }}
+                        onClick={() => {
+                            redirect(`editholding/${row.original._id}`)
+                        }}
+                        >
+                            Edit
+                        </span>
+                    )
+                },
+                {
+                    accessor: "delete",
+                    Cell: ({row}) => (
+                        <span
+                        style = {{
+                            cursor: "pointer",
+                            color: "blue",
+                            textDecoration: "underline",
+                        }}
+                        onClick={() => {
+                            removeHolding(row.original._id, row.original.Owner)
+                        }}
+                        >
+                            Delete
+                        </span>
+                    )
+                },
+
+            ]
+
         },
-        {
-            Header: "Legal Entity",
-            accessor: "LegalEntity"
-        },
-        {
-            Header: "Net Mineral Acres",
-            accessor: "NetMineralAcres"
-        },
-        {
-            Header: "Mineral Owner Royalty (%)",
-            accessor: "MineralOwnerRoyalty"
-        },
-        {
-            Header: "Section Name",
-            accessor: "SectionName"
-        },
-        {
-            Header: "Section",
-            accessor: "Section"
-        },
-        {
-            Header: "Township",
-            accessor: "Township"
-        },
-        {
-            Header: "Range",
-            accessor: "Range"
-        },
-        {
-            Header: "Title Source",
-            accessor: "TitleSource"
-        },
-        {
-            Header: "Delete?",
-            id: "delete",
-            accessor: (str) => "delete",
-            Cell: ({row}) => (
-                <span
-                style = {{
-                    cursor: "pointer",
-                    color: "blue",
-                    textDecoration: "underline",
-                }}
-                onClick={() => {
-                    removeHolding(row.original._id, row.original.OwnerName)
-                }}
-                >
-                    Delete
-                </span>
-            )
-        }
         ];
 
-  // Now, instead of using useEffect, we are using useQuery.
+  // useQuery to recieve data
   // Also, we don't need to manage state separately. The data
   // is already managed by the useQuery hook
   const { isLoading, error, data, refetch } = useQuery("allData", loadData);
         
-  // Helper function to be performed whenever an expense gets deleted.
+  // To be performed whenever something gets deleted.
   // Here, instead of calling the loadExpenses function, we are calling
   // the refetch function. This will trigger the loadExpenses function
   // on our behalf, and will update the state automatically.

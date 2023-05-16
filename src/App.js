@@ -5,9 +5,10 @@ import Home from "./pages/Home.page";
 import Login from "./pages/Login.page";
 import PrivateRoute from "./pages/PrivateRoute.page";
 import Signup from "./pages/Signup.page";
-import OwnerForm from "./components/OwnerForm.component";
 import CreateOwner from "./pages/CreateOwner.page.js"
 import CreateHolding from "./pages/CreateHolding.page";
+import EditOwner from "./pages/EditOwner.page";
+import EditHolding from "./pages/EditHolding.page";
 
 // Creating a new query-client which we will use
 // in our QueryClientProvider that can be accessed 
@@ -31,6 +32,8 @@ function App() {
             </Route>
             <Route exact path="/newowner" element={<CreateOwner />} />
             <Route exact path="/newholding" element={<CreateHolding />} />
+            <Route exact path="/editowner/:id" element={<EditOwner />} />
+            <Route exact path="/editholding/:id" element={<EditHolding />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>

@@ -7,13 +7,14 @@
 /* Table CSS */
 
 table.greyGridTable {
+  box-sizing: border-box;
   border: 2px solid #000000;
   width: 100%;
   text-align: center;
   border-collapse: collapse;
 }
 table.greyGridTable td, table.greyGridTable th {
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   padding: 3px 4px;
 }
 table.greyGridTable tbody td {

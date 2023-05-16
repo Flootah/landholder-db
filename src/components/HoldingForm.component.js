@@ -1,7 +1,10 @@
 import { Button, TextField, InputField, Select, MenuItem,FormHelperText } from "@mui/material";
 import PageContainer from "./PageContainer.component";
+import { useNavigate } from "react-router-dom";
 
 const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
+  const navigate = useNavigate();
+
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
@@ -54,6 +57,7 @@ const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
         value={form.Section}
         onChange={onFormInputChange}
         fullWidth
+        inputProps={{ maxLength: 3 }}
         style={{ marginBottom: "1rem" }} />
       <TextField
         label="Township"
@@ -63,6 +67,7 @@ const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
         value={form.Township}
         onChange={onFormInputChange}
         fullWidth
+        inputProps={{ maxLength: 4 }}
         style={{ marginBottom: "1rem" }} />
       <TextField
         label="Range"
@@ -72,6 +77,7 @@ const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
         value={form.Range}
         onChange={onFormInputChange}
         fullWidth
+        inputProps={{ maxLength: 4 }}
         style={{ marginBottom: "1rem" }} />
 
       <FormHelperText>Title Source</FormHelperText>
@@ -93,6 +99,9 @@ const HoldingForm = ({ onSubmit, form, setForm, editing }) => {
 
       <Button variant="contained" color="primary" onClick={onSubmit} type="submit">
         {editing ? "Update" : "Create"} Holding
+      </Button>
+      <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+        Cancel
       </Button>
     </form>
   </PageContainer>;

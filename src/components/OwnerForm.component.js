@@ -1,7 +1,10 @@
 import { Button, TextField, InputField, Select, MenuItem, FormHelperText } from "@mui/material";
 import PageContainer from "./PageContainer.component";
+import { useNavigate } from "react-router-dom";
 
 const OwnerForm = ({ onSubmit, form, setForm, editing }) => {
+  const navigate = useNavigate();
+
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
@@ -76,6 +79,9 @@ const OwnerForm = ({ onSubmit, form, setForm, editing }) => {
         style={{ marginBottom: "1rem" }} /> */}
       <Button variant="contained" color="primary" onClick={onSubmit} type="submit">
         {editing ? "Update" : "Create"} Owner
+      </Button>
+      <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+        Cancel
       </Button>
     </form>
   </PageContainer>;

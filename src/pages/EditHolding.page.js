@@ -1,13 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import { gql, request } from "graphql-request";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import HoldingForm from "../components/HoldingForm.component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 
-const CreateHolding = () => {
+
+
+
+
+const  EditHolding = () => {
   const { user } = useContext(UserContext);
+  const { id } = useParams();
   const navigate = useNavigate();
 
   // Some prefilled form state
@@ -24,47 +30,84 @@ const CreateHolding = () => {
     TitleSource: "Class A",
   });
 
-  // GraphQL query to create an expense
-  const createHoldingQuery = gql`
-  mutation AddLandHolding($data: LandholdingInsertInput!) {
-    insertOneLandholding(data: $data) {
+
+  // GraphQL query to edit a holding
+  const updateHoldingMutation = gql`
+  mutation EditHolding($query: LandholdingQueryInput!, $set: LandholdingUpdateInput!) {
+    updateOneLandholding(query: $query, set: $set) {
       _id
     }
   }
   `;
 
-  const updateOwnerQuery = gql`
-  mutation UpdateOwner($owner: String) {
-    updateOneOwner(query: {OwnerName: $owner}, set: {TotalNumberOfLandHoldings_inc: 1}) {
-      _id
+  // search for an owner by id
+  const curHoldingQuery = gql`
+  query searchHolding($id: ObjectId){
+    landholdings (query:{_id: $id}) {
+      Name
+      Owner
+      LegalEntity
+      NetMineralAcres
+      MineralOwnerRoyalty
+      SectionName
+      Section
+      Township
+      Range
+      TitleSource
     }
   }
-  `;
+  `
 
-
-  // All the data that needs to be sent to the GraphQL endpoint
-  // to create an expense will be passed through queryVariables.
-  var queryVariables = {
-    data: {
+  const updateVariables = {
+    query: {
+      _id: id
+    },
+    set: {
+      Name: form.Name,
       Owner: form.Owner,
       LegalEntity: form.LegalEntity,
       NetMineralAcres: form.NetMineralAcres,
       MineralOwnerRoyalty: form.MineralOwnerRoyalty,
-      SectionName: form.Section + "-" + form.Township + "-" + form.Range,
-      Name:  form.Section + "-" + form.Township + "-" + form.Range + "-" + form.LegalEntity,
+      SectionName: form.SectionName,
       Section: form.Section,
       Township: form.Township,
       Range: form.Range,
       TitleSource: form.TitleSource,
-    }
+    },
   };
 
   // To prove that the identity of the user, we are attaching
   // an Authorization Header with the request
   const headers = { Authorization: `Bearer ${user._accessToken}` };
 
+  const loadCurHolding = () => request(GRAPHQL_ENDPOINT,
+    curHoldingQuery,
+    {"id": id},
+    headers
+  );
+
+  const { isLoading, error, data, refetch } = useQuery("curHolding", loadCurHolding, {
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      const {Name, Owner, LegalEntity, NetMineralAcres, MineralOwnerRoyalty, SectionName, Section, Township, Range, TitleSource} = data.landholdings[0]
+      setForm({
+        Name: Name,
+        Owner: Owner,
+        LegalEntity: LegalEntity,
+        NetMineralAcres: NetMineralAcres,
+        MineralOwnerRoyalty: MineralOwnerRoyalty,
+        SectionName: SectionName,
+        Section: Section,
+        Township: Township,
+        Range: Range,
+        TitleSource: TitleSource,
+      })
+    }
+  });
+
   const onSubmit = async (event) => {
     event.preventDefault();
+
     const { Section, Township, Range } = form;
     // verify input
     if(!Section.match(/\d{3}/)) {
@@ -82,12 +125,12 @@ const CreateHolding = () => {
       return;
     }
 
+    // TODO change respective holding values when OwnerName is edited
 
     try {
-      // create holding
-      await request(GRAPHQL_ENDPOINT, createHoldingQuery, queryVariables, headers);
-      // increment respective owner
-      await request(GRAPHQL_ENDPOINT, updateOwnerQuery, {owner: form.Owner}, headers)
+      await request(GRAPHQL_ENDPOINT, updateHoldingMutation, updateVariables, headers);
+
+      // Navigate to the Home page after creating an expense
       navigate(`/`);
     } catch (error) {
       alert(error)
@@ -96,8 +139,8 @@ const CreateHolding = () => {
   };
 
   return <PageContainer>
-    <HoldingForm onSubmit={onSubmit} form={form} setForm={setForm} title="Create Holding" />
+    <HoldingForm onSubmit={onSubmit} form={form} setForm={setForm} editing={true} title="Edit Holding" />
   </PageContainer>
 }
 
-export default CreateHolding;
+export default EditHolding;
